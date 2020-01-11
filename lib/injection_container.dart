@@ -17,16 +17,14 @@
 import 'package:clean_code/core/utils/input_converter.dart';
 import 'package:clean_code/features/number_trivia/bloc/number_trivia_bloc.dart';
 import 'package:clean_code_domain/doman_injection_container.dart';
-import 'package:clean_code_domain/features/number_trivia/usecases/get_concrete_number_trivia.dart';
-import 'package:clean_code_domain/features/number_trivia/usecases/get_random_number_trivia.dart';
 import 'package:get_it/get_it.dart';
 
 final sL = GetIt.instance;
 
-void init()  {
+void init() {
   //! register number trivia features
   //! Bloc register
-   initDomainSL();
+  initDomainSL();
 
   sL.registerFactory(() => NumberTriviaBloc(
         concreteUseCase: domainSL(),

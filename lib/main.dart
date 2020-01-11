@@ -31,7 +31,9 @@ class MyApp extends StatelessWidget {
         title: 'Number Trivia',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primarySwatch: Colors.blue, accentColor: Colors.blueAccent),
+          primarySwatch: Colors.blue,
+          accentColor: Colors.blueAccent,
+        ),
         home: NumberTriviaPage(),
       );
 }

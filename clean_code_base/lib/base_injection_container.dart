@@ -15,6 +15,7 @@
  */
 
 import 'package:clean_code_base/core/network/network_info.dart';
+import 'package:clean_code_base/features/number_trivia/datasources/moor_database.dart';
 import 'package:clean_code_base/features/number_trivia/datasources/number_trivia_local_data_source.dart';
 import 'package:clean_code_base/features/number_trivia/datasources/number_trivia_remote_data_source.dart';
 import 'package:clean_code_models/repositories/number_trivia_repository.dart';
@@ -38,5 +39,6 @@ void initBaseSL()  {
   baseSL.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(baseSL()));
   baseSL.registerLazySingleton(() => DataConnectionChecker());
   baseSL.registerLazySingleton<NumberTriviaLocalDataSource>(
-      () => NumberTriviaLocalDataSourceImpl());
+      () => NumberTriviaLocalDataSourceImpl(baseSL()));
+  baseSL.registerLazySingleton(() => AppDatabase().numberTriviaDao);
 }

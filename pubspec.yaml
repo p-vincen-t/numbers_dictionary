@@ -1,5 +1,5 @@
 name: clean_code
-description: A new Flutter application.
+description: Number Trivia application
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -14,15 +14,16 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^2.0.1
-  flutter_bloc: ^0.21.0
-  equatable: ^0.4.0
-  dartz: ^0.8.6
+  get_it: ^3.1.0
+  flutter_bloc: ^3.1.0
+  equatable: ^1.0.2
+  dartz: ^0.8.9
+  flutter_slidable: ^0.5.4
   clean_code_domain:
     path: './clean_code_domain'
   clean_code_models:

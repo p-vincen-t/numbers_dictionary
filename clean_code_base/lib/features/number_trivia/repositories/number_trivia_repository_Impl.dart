@@ -32,35 +32,58 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
   NumberTriviaRepositoryImpl(
       {@required this.localDataSource,
       @required this.remoteDataSource,
-      @required this.networkInfo});
+      @required this.networkInfo,});
 
   @override
-  Future<Either<Failure, NumberTrivia>> getConcreteNumberTrivia(
+  Future<Either<Failure, NumberTrivia>> searchNumberTrivia(
     int number,
   ) async =>
-      _getTrivia(() => remoteDataSource.getConcreteNumberTrivia(number));
+      _getTrivia(
+        () => remoteDataSource.getConcreteNumberTrivia(
+          number,
+        ),
+      );
 
   @override
-  Future<Either<Failure, NumberTrivia>> getRandomNumberTrivia() async =>
-      _getTrivia(() => remoteDataSource.getRandomNumberTrivia());
+  Future<Either<Failure, NumberTrivia>> getRandomNumberTrivia()  =>
+      _getTrivia(
+        () => remoteDataSource.getRandomNumberTrivia(),
+      );
 
   Future<Either<Failure, NumberTrivia>> _getTrivia(
-      Future<NumberTrivia> getConcreteOrRandom()) async {
+    Future<NumberTrivia> getConcreteOrRandom(),
+  ) async {
     if (await networkInfo.isConnected) {
       try {
         final result = await getConcreteOrRandom();
-        localDataSource.cacheNumberTrivia(result);
-        return Right(result);
+        localDataSource.saveNumberTrivia(
+          result,
+        );
+        return Right(result,);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
       try {
-        final trivia = await localDataSource.getLastNumberTrivia();
-        return Right(trivia);
+        final trivia = await localDataSource.();
+        return Right(
+          trivia.toNumberTrivia(),
+        );
       } on CacheException {
-        return Left(CacheFailure());
+        return Left(
+          CacheFailure(),
+        );
       }
     }
   }
+
+  @override
+  Stream<List<NumberTrivia>> getListOfNumberOfTrivia() =>
+      localDataSource.getAllSavedNumberTriviaAsStream();
+
+  @override
+  Future<bool> clearAllNumberTrivia() => localDataSource.deleteAllNumberTrivia();
+
+  @override
+  Future<bool> deleteNumberTrivia(NumberTrivia numberTrivia) => localDataSource.deleteNumberTrivia(numberTrivia);
 }

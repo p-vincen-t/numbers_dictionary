@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Peter Vincent
  *
@@ -15,22 +14,14 @@
  * limitations under the License.
  */
 
-import 'package:clean_code_models/number_trivia.dart';
-import 'package:meta/meta.dart';
+import 'package:built_value/serializer.dart';
+import 'package:built_value/standard_json_plugin.dart';
+import 'number_trivia.dart';
 
-class NumberTriviaModel extends NumberTrivia {
+part 'serializers.g.dart';
 
-  NumberTriviaModel(
-      {@required String text,
-        @required int number})
-      : super(text: text, number: number);
-
-  factory NumberTriviaModel.fromJson(Map<String, dynamic> json) =>
-      NumberTriviaModel(
-          text: json['text'], number: (json['number'] as num).toInt());
-
-  Map<String, dynamic> toJson() => {
-      'text': text,
-      'number': number
-    };
-}
+@SerializersFor(const  [
+  NumberTriviaModel
+])
+final Serializers serializers =
+(_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();

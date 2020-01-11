@@ -14,35 +14,79 @@
  * limitations under the License.
  */
 
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:clean_code_base/core/errors/exceptions.dart';
-import 'package:clean_code_base/features/number_trivia/models/number_trivia.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:clean_code_base/features/number_trivia/datasources/moor_database.dart';
+import 'package:clean_code_models/number_trivia.dart';
 
 abstract class NumberTriviaLocalDataSource {
-  Future<NumberTriviaModel> getLastNumberTrivia();
+  Stream<List<NumberTrivia>> getAllSavedNumberTriviaAsStream();
 
-  Future<void> cacheNumberTrivia(NumberTriviaModel numberTriviaModel);
+  Future<int> saveNumberTrivia(NumberTrivia numberTriviaModel);
+
+  Future<List<NumberTrivia>> getAllNumberTriviaContainingNumber(int number);
+
+  Future<bool> deleteAllNumberTrivia();
+
+  Future<bool> deleteNumberTrivia(NumberTrivia numberTrivia);
 }
 
-const CACHED_TRIVIA = 'CACHED_TRIVIA';
-
 class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDataSource {
+  final NumberTriviaDao appDatabase;
+
+  NumberTriviaLocalDataSourceImpl(
+    this.appDatabase,
+  );
+
   @override
-  Future<NumberTriviaModel> getLastNumberTrivia() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    final jsonString = sharedPreferences.getString(CACHED_TRIVIA);
-    if (jsonString != null)
-      return Future.value(NumberTriviaModel.fromJson(json.decode(jsonString)));
-    else
+  Future<int> saveNumberTrivia(NumberTrivia numberTriviaModel) =>
+      appDatabase.insertNumberTrivia(
+        NumberTriviaTableData(
+          id: numberTriviaModel.id,
+          triviaText: numberTriviaModel.text,
+          triviaNumber: numberTriviaModel.number as String,
+          addedAt: DateTime.now(),
+        ),
+      );
+
+  @override
+  Stream<List<NumberTrivia>> getAllSavedNumberTriviaAsStream() =>
+      appDatabase.watchAllNumberTriviaAsStream().map(
+            (list) => _extractTrivia(list),
+          );
+
+  List<NumberTrivia> _extractTrivia(List<NumberTriviaTableData> list) =>
+      list.map(
+        (data) => NumberTrivia((b) => b
+          ..text = data.triviaText
+          ..id = data.id
+          ..number = data.triviaNumber as int),
+      );
+
+  @override
+  Future<List<NumberTrivia>> getAllNumberTriviaContainingNumber(
+      int number) async {
+    final variableName = _extractTrivia(
+      await appDatabase.getAllNumberTriviaForLike(
+        number,
+      ),
+    );
+    if (variableName.isEmpty) {
       throw CacheException();
+    }
+    return Future.value(
+      variableName,
+    );
   }
 
   @override
-  Future<void> cacheNumberTrivia(NumberTriviaModel numberTriviaModel) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.setString(
-        CACHED_TRIVIA, json.encode(numberTriviaModel.toJson()));
-  }
+  Future<bool> deleteAllNumberTrivia() => appDatabase.clearNumberTrivia();
+
+  @override
+  Future<bool> deleteNumberTrivia(NumberTrivia numberTrivia) =>
+      appDatabase.deleteNumberTrivia(NumberTriviaTableData(
+          id: numberTrivia.id,
+          triviaNumber: numberTrivia.number as String,
+          triviaText: numberTrivia.text));
 }

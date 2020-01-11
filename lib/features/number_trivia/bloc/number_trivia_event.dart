@@ -28,3 +28,5 @@ class GetTriviaForConcreteNumberEvent extends NumberTriviaEvent {
 }
 
 class GetTriviaForRandomNumberEvent extends NumberTriviaEvent {}
+
+class GetManyRandomTriviaEvent extends NumberTriviaEvent {}

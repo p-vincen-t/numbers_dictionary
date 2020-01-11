@@ -22,6 +22,7 @@ import 'package:clean_code/features/number_trivia/bloc/number_trivia_event.dart'
 import 'package:clean_code/features/number_trivia/bloc/numbr_trivia_state.dart';
 import 'package:clean_code_domain/core/usecase.dart';
 import 'package:clean_code_domain/features/number_trivia/usecases/get_concrete_number_trivia.dart';
+import 'package:clean_code_domain/features/number_trivia/usecases/get_list_of_number_trivia_use_case.dart';
 import 'package:clean_code_domain/features/number_trivia/usecases/get_random_number_trivia.dart';
 import 'package:clean_code_models/core/errors/failure.dart';
 import 'package:clean_code_models/number_trivia.dart';
@@ -31,17 +32,25 @@ import 'package:meta/meta.dart';
 class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   final GetConcreteNumberTriviaUseCase getConcreteNumberTriviaUseCase;
   final GetRandomNumberTriviaUseCase getRandomNumberTriviaUseCase;
+  final GetListOfNumberTriviaUseCase getListOfNumberTriviaUseCase;
   final InputConverter inputConverter;
 
   NumberTriviaBloc(
       {@required GetConcreteNumberTriviaUseCase concreteUseCase,
       @required GetRandomNumberTriviaUseCase randomUseCase,
+      @required GetListOfNumberTriviaUseCase listUseCase,
       @required this.inputConverter})
       : assert(concreteUseCase != null),
         assert(randomUseCase != null),
         assert(inputConverter != null),
+        assert(listUseCase != null),
         getConcreteNumberTriviaUseCase = concreteUseCase,
-        getRandomNumberTriviaUseCase = randomUseCase;
+        getRandomNumberTriviaUseCase = randomUseCase,
+        getListOfNumberTriviaUseCase = listUseCase;
+
+  void search(String input) {
+
+  }
 
   @override
   NumberTriviaState get initialState => EmptyState();
@@ -66,6 +75,14 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       final failureOrTrivia =
           await getRandomNumberTriviaUseCase(NoNumberParam());
       yield* _eitherLoadingOrErrorState(failureOrTrivia);
+    } else if ((event is GetManyRandomTriviaEvent)) {
+      yield LoadingState();
+      final failureOrList = await getListOfNumberTriviaUseCase(NoNumberParam());
+      yield* failureOrList.fold((failure) async* {
+        yield ErrorState(failure: failure);
+      }, (list) async* {
+        yield LoadedManyState(list);
+      });
     }
   }
 

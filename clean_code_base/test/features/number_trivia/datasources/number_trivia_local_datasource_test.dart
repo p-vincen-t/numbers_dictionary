@@ -62,7 +62,7 @@ void main() {
     final numberTriviaModel =
     NumberTriviaModel(text: 'test', number: 1);
     test('should call shared preferences to cache the data', () async {
-      dataSource.cacheNumberTrivia(numberTriviaModel);
+      dataSource.saveNumberTrivia(numberTriviaModel);
       final expedtedJsonString = json.encode(numberTriviaModel.toJson());
       verify(sharePreferences.setString(CACHED_TRIVIA, expedtedJsonString));
     });

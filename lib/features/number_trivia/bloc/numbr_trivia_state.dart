@@ -34,6 +34,12 @@ class LoadedState extends NumberTriviaState {
   LoadedState({@required this.numberTrivia}) : super([numberTrivia]);
 }
 
+class LoadedManyState extends NumberTriviaState {
+  final List<NumberTrivia> list;
+
+  LoadedManyState(this.list) : super(list);
+}
+
 class ErrorState extends NumberTriviaState {
   final Failure failure;
 

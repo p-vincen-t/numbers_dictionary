@@ -76,7 +76,7 @@ void main() {
           () async {
         when(remoteDataSource.getConcreteNumberTrivia(any))
             .thenAnswer((_) async => numberTriviaModel);
-        final result = await repository.getConcreteNumberTrivia(number);
+        final result = await repository.searchNumberTrivia(number);
         verify(remoteDataSource.getConcreteNumberTrivia(number));
         expect(result, equals(Right(numberTrivia)));
       });
@@ -86,9 +86,9 @@ void main() {
           () async {
         when(remoteDataSource.getConcreteNumberTrivia(any))
             .thenAnswer((_) async => numberTriviaModel);
-        await repository.getConcreteNumberTrivia(number);
+        await repository.searchNumberTrivia(number);
         verify(remoteDataSource.getConcreteNumberTrivia(number));
-        verify(localDataSource.cacheNumberTrivia(numberTriviaModel));
+        verify(localDataSource.saveNumberTrivia(numberTriviaModel));
       });
 
       test(
@@ -97,7 +97,7 @@ void main() {
         when(remoteDataSource.getConcreteNumberTrivia(any))
             .thenThrow(ServerException());
 
-        final result = await repository.getConcreteNumberTrivia(number);
+        final result = await repository.searchNumberTrivia(number);
         verify(remoteDataSource.getConcreteNumberTrivia(number));
         verifyZeroInteractions(localDataSource);
         expect(result, equals(Left(ServerFailure())));
@@ -110,7 +110,7 @@ void main() {
           () async {
         when(localDataSource.getLastNumberTrivia())
             .thenAnswer((_) async => numberTriviaModel);
-        final result = await repository.getConcreteNumberTrivia(number);
+        final result = await repository.searchNumberTrivia(number);
         verifyZeroInteractions(remoteDataSource);
         verify(localDataSource.getLastNumberTrivia());
         expect(result, equals(Right(numberTrivia)));
@@ -119,7 +119,7 @@ void main() {
       test('should return CacheFailure data when catched data is not present',
           () async {
         when(localDataSource.getLastNumberTrivia()).thenThrow(CacheException());
-        final result = await repository.getConcreteNumberTrivia(number);
+        final result = await repository.searchNumberTrivia(number);
         verifyZeroInteractions(remoteDataSource);
         verify(localDataSource.getLastNumberTrivia());
         expect(result, equals(Left(CacheFailure())));
@@ -150,7 +150,7 @@ void main() {
             .thenAnswer((_) async => tNumberTriviaModel);
         await repository.getRandomNumberTrivia();
         verify(remoteDataSource.getRandomNumberTrivia());
-        verify(localDataSource.cacheNumberTrivia(tNumberTriviaModel));
+        verify(localDataSource.saveNumberTrivia(tNumberTriviaModel));
       });
 
       test(

@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 
+library number_trivia_model;
 
-library number_trivia;
 import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+import 'package:clean_code_models/number_trivia.dart';
 
 part 'number_trivia.g.dart';
 
-abstract class NumberTrivia implements Built<NumberTrivia, NumberTriviaBuilder> {
+abstract class NumberTriviaModel
+    implements Built<NumberTriviaModel, NumberTriviaModelBuilder> {
   // fields go here
+  @nullable
   int get id;
+
   String get text;
+
   int get number;
 
-  NumberTrivia._();
+  NumberTriviaModel._();
 
-  factory NumberTrivia([updates(NumberTriviaBuilder b)]) = _$NumberTrivia;
+  factory NumberTriviaModel([updates(NumberTriviaModelBuilder b)]) =
+      _$NumberTriviaModel;
+
+  NumberTrivia toNumberTrivia() => NumberTrivia((n) => n
+    ..number = this.number
+    ..text = this.text
+    ..id = this.id);
+
+  static Serializer<NumberTriviaModel> get serializer =>
+      _$numberTriviaModelSerializer;
 }

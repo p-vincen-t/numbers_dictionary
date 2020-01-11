@@ -14,38 +14,29 @@
  * limitations under the License.
  */
 
-import 'dart:convert';
-
-import 'package:clean_code_base/core/errors/exceptions.dart';
-import 'package:clean_code_base/features/number_trivia/models/number_trivia.dart';
-import 'package:http/http.dart' as http;
+import 'package:clean_code_base/features/number_trivia/datasources/number_trivia_chopper_service.dart';
+import 'package:clean_code_models/number_trivia.dart';
 
 abstract class NumberTriviaRemoteDataSource {
-  Future<NumberTriviaModel> getConcreteNumberTrivia(int number);
+  Future<NumberTrivia> getConcreteNumberTrivia(int number);
 
-  Future<NumberTriviaModel> getRandomNumberTrivia();
+  Future<NumberTrivia> getRandomNumberTrivia();
 }
 
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
-  final http.Client httpClient;
+  final NumberTriviaChopperService numberTriviaChopperService;
 
-  NumberTriviaRemoteDataSourceImpl(this.httpClient);
-
-  @override
-  Future<NumberTriviaModel> getConcreteNumberTrivia(int number) =>
-      _getTriviaFromUrl('http://numbersapi.com/$number');
+  NumberTriviaRemoteDataSourceImpl(this.numberTriviaChopperService);
 
   @override
-  Future<NumberTriviaModel> getRandomNumberTrivia() =>
-      _getTriviaFromUrl('http://numbersapi.com/random');
+  Future<NumberTrivia> getConcreteNumberTrivia(int number) async {
+    final response = await numberTriviaChopperService.getNumberTrivia(number);
+    return Future.value(response.body.toNumberTrivia());
+  }
 
-  Future<NumberTriviaModel> _getTriviaFromUrl(String url) async {
-    final response = await httpClient.get(url, headers: {
-      'Content-Type': 'application/json',
-    });
-    if (response.statusCode == 200)
-      return NumberTriviaModel.fromJson(json.decode(response.body));
-    else
-      throw ServerException();
+  @override
+  Future<NumberTrivia> getRandomNumberTrivia() async {
+    final response = await numberTriviaChopperService.getRandomTrivia();
+    return Future.value(response.body.toNumberTrivia());
   }
 }
