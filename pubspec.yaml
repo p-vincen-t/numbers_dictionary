@@ -1,5 +1,6 @@
 name: clean_code
 description: A new Flutter application.
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -14,15 +15,15 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.17.6 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^2.0.1
-  flutter_bloc: ^0.21.0
-  equatable: ^0.4.0
-  dartz: ^0.8.6
+  get_it: ^7.6.7
+  flutter_bloc: ^8.1.4
+  equatable: ^2.0.5
+  dartz: ^0.10.1
   clean_code_domain:
     path: './clean_code_domain'
   clean_code_models:
@@ -30,12 +31,12 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.0
+  mockito: 5.4.4
 
 
 # For information on the generic Dart part of this file, see the

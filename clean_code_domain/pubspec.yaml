@@ -5,14 +5,14 @@ author:
 homepage:
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.17.6 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^2.0.1
-  equatable: ^0.4.0
-  dartz: ^0.8.6
+  get_it: ^7.6.7
+  equatable: ^2.0.5
+  dartz: ^0.10.1
   clean_code_base:
     path: '../clean_code_base'
   clean_code_models:

@@ -5,15 +5,14 @@ author:
 homepage:
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.17.6 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  data_connection_checker: ^0.3.4
-  shared_preferences: ^0.5.3+4
-  http: ^0.12.0+2
-  get_it: ^2.0.1
+  shared_preferences: ^2.2.2 
+  http: ^1.2.0
+  get_it: ^7.6.7
   clean_code_models:
     path: '../clean_code_models'
 
